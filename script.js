@@ -1,19 +1,20 @@
-const url = ("https://rickandmortyapi.com/api/character")
-const searchBar = document.getElementById("#search")
-
-let filteredCharacters = []
+const url = "https://rickandmortyapi.com/api/character"
+const searchBar = document.getElementById("search")
+const searchForm = document.getElementById("searchText")
+let allData = []
 
 async function allCharacters(){
   const response = await fetch(url);
   const data = await response.json();
+  allData = data.results;
   createCharacters(data.results);
-  filteredCharacters = data.results
 }
 allCharacters();
 
-
 function createCharacters(charactersArray){
+  console.log(charactersArray)
     const characterCont = document.querySelector('#characterContainer');
+    characterCont.innerHTML = ""
     charactersArray.forEach(character => {
       characterCont.innerHTML = characterCont.innerHTML +
       `<ol id="list">
@@ -26,10 +27,18 @@ function createCharacters(charactersArray){
       `
     });
 }
-searchBar.addEventListener("keyup", (e) => {
-  const searchStr = e.target.value.toLowerCase();
-  let searchValue = filteredCharacters.filter(filteredCharacter => {
-    return (filteredCharacter.name.toLowerCase().includes(searchStr));
-  });
-  createCharacters(searchValue);
+
+searchForm.addEventListener("submit", (e) => {
+  e.preventDefault()
+  const searchStr = searchBar.value.toLowerCase().trim();
+  if(searchStr){
+    let searchValue = allData.filter(filteredCharacter => {
+      return (filteredCharacter.name.toLowerCase().includes(searchStr));
+    });
+    createCharacters(searchValue);
+  } else {
+    createCharacters(allData)
+  }
 });
+
+searchBar.addEventListener("keyup", (e) => {});
